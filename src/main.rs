@@ -32,20 +32,21 @@ fn main() -> std::io::Result<()>{
     let mut reader = csv::Reader::from_reader(contents.as_bytes());
     
 
-/*
-    for record in reader.deserialize(){
-        let record: Record = record?;
-        println!("{} - {}",record.date, record.person);
-
-    }
-*/
 
     let mut today = chrono::offset::Local::now().to_string();
     today = (&today[5..11]).to_string();
 
 
     if input.len() < 2{
-        println!("yoy");
+
+        println!("Birthdays this month: ");
+        for record in reader.deserialize(){
+              let record: Record = record?;
+                if &record.date[0..2] == &today[0..2]{
+                  println!("{} on {}",record.person, record.date);
+            }
+        }
+            
         process::exit(0);
     }  
 
@@ -54,21 +55,16 @@ fn main() -> std::io::Result<()>{
 
 
         match argument.as_str(){
-            "-m" =>{
-
+            "-all" => { 
+                println!("All birthdays registered: ");
+                
                 for record in reader.deserialize(){
                     let record: Record = record?;
-
-                    if &record.date[0..2] == &today[0..2]{
-                        println!("{} on {}",record.person, record.date);
-                    }
-                }
-            }
-            "-w" => { 
-
+                    println!("{} on {}", record.person, record.date);
+                }  
             }
             "-nm" => {
-
+                process::exit(0);
             }
             "new" => {
                 println!("Type the name of the person:");
@@ -96,13 +92,56 @@ fn main() -> std::io::Result<()>{
 
 
             }
+            "help" =>{
+                print_help();
+            }
+            "-h" => {
+                print_help();
+            }
+            "-help" =>{
+                print_help();
+            }
+            "-version"=>{
+                print_version();
+            }
+            "version" =>{
+                print_version();
+            }
+            "-v" =>{
+                print_version();
+            }
             &_ => {
-                println!("{argument} is not recognized as a command for bdays");
-                
+               print_help(); 
             }
         }
     }
 
     Ok(())
 
+}
+
+fn print_help(){
+    println!("Thank you for using bdays, you can use the following commands:");
+    println!("");
+    println!("-h | help | -help");
+    println!("These commands will open this help menu.");
+    println!("");
+    println!("-version version -v");
+    println!("These commands will tell you the current version running.");
+    println!("");
+    println!("new");
+    println!("This comman will open an assistant to enter new birthdays.");
+    println!("You can always just edit the csv directly, found on the folder of the project.");
+    println!("");
+    println!("-all");
+    println!("This command will show all the birthdays registered");
+    println!("");
+    println!("No commands");
+    println!("Bdays will show you all the birthdays this month.");
+
+    
+}
+
+fn print_version(){
+    println!("version 1.0");
 }
