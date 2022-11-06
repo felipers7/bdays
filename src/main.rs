@@ -2,9 +2,11 @@ use std::env::args;
 use chrono;
 use csv;
 use std::process;
+use std::env;
 use std::fs::OpenOptions;
 use std::io::BufReader;
 use std::io::prelude::*;
+use std::path::Path;
 use serde::Deserialize;
 use std::io;
 
@@ -18,11 +20,20 @@ fn main() -> std::io::Result<()>{
 
     let input = args().collect::<Vec<String>>();
 
+
+
+    //All paths are paths to hell.
+
+    let mut path = env::current_exe()?.display().to_string();
+    path = (path[0..&path.len()-10]).to_string();
+    path.push_str("\\bdays.csv");
+    
+    
     let mut file = OpenOptions::new()
         .read(true)
         .write(true)
         .append(true)
-        .open("bdays.csv")
+        .open(Path::new(&path))
         .unwrap();
 
     let mut buf_reader = BufReader::new(&file);
